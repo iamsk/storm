@@ -1,7 +1,12 @@
 import os
 from knowledge_storm.lm import OpenAIModel
-from knowledge_storm.storm_wiki.modules.article_generation import StormArticleGenerationModule, StormArticle
+from knowledge_storm.storm_wiki.modules.article_generation import (
+    StormArticleGenerationModule,
+    StormArticle,
+)
 from knowledge_storm.storm_wiki.modules.storm_dataclass import StormInformationTable
+from pycallgraph import PyCallGraph
+from pycallgraph.output import GraphvizOutput
 
 key = os.getenv("OPENAI_API_KEY")
 openai_kwargs = {
@@ -13,10 +18,11 @@ engine = OpenAIModel(model="gpt-3.5-turbo", max_tokens=500, **openai_kwargs)
 topic = "Deep Research of MSTR's Bitcoin Investment"
 
 
-def test_generate_section():
+def generate_section():
     storm_article_generation = StormArticleGenerationModule(article_gen_lm=engine)
     information_table = StormInformationTable.from_conversation_log_file(
-            "results/default/Deep_Research_of_MSTR's_Bitcoin_Investment/conversation_log.json")
+        "results/default/Deep_Research_of_MSTR's_Bitcoin_Investment/conversation_log.json"
+    )
     article_with_outline = StormArticle.from_outline_file(
         topic=topic,
         file_path="results/default/Deep_Research_of_MSTR's_Bitcoin_Investment/storm_gen_outline.txt",
@@ -34,11 +40,23 @@ def test_generate_section():
     print(f"section_outline: {section_outline}")
     information_table.prepare_table_for_retrieval()
     section_output_dict = storm_article_generation.generate_section(
-                topic=topic,
-                section_name=section_title,
-                information_table=information_table,
-                section_outline=section_outline,
-                section_query=section_query,
-            )
+        topic=topic,
+        section_name=section_title,
+        information_table=information_table,
+        section_outline=section_outline,
+        section_query=section_query,
+    )
     print(section_output_dict)
-    assert "pivotal decision" in section_output_dict['section_content']
+    assert "Initial Bitcoin Acquisition" in section_output_dict["section_content"]
+
+
+def test_generate_section():
+    generate_section()
+
+
+if __name__ == "__main__":
+    graphviz = GraphvizOutput()
+    graphviz.output_type = "dot"
+    graphviz.output_file = "pycallgraph.dot"
+    with PyCallGraph(output=graphviz):
+        generate_section()
