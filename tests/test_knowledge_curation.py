@@ -14,10 +14,12 @@ openai_kwargs = {
     "top_p": 0.9,
 }
 engine = OpenAIModel(model="gpt-3.5-turbo", max_tokens=500, **openai_kwargs)
-topic = "Deep Research of MSTR's Bitcoin Investment"
+
 ydc_api_key = os.getenv("YDC_API_KEY")
 rm = YouRM(ydc_api_key=ydc_api_key, k=3)
 retriever = Retriever(rm=rm, max_thread=10)
+
+topic = "Deep Research of MSTR's Bitcoin Investment"
 
 
 def test_ask_question():
