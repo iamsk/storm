@@ -54,19 +54,19 @@ def main(args):
     # To check out available Google models, see:
     # https://ai.google.dev/gemini-api/docs/get-started/tutorial?lang=python#list_models
     conv_simulator_lm = GoogleModel(
-        model="models/gemini-1.5-flash", max_tokens=500, **gemini_kwargs
+        model="models/gemini-2.0-flash-001", max_tokens=500, **gemini_kwargs
     )
     question_asker_lm = GoogleModel(
-        model="models/gemini-1.5-flash", max_tokens=500, **gemini_kwargs
+        model="models/gemini-2.0-flash-001", max_tokens=500, **gemini_kwargs
     )
     outline_gen_lm = GoogleModel(
-        model="models/gemini-1.5-pro-exp-0801", max_tokens=400, **gemini_kwargs
+        model="models/gemini-2.0-flash-001", max_tokens=400, **gemini_kwargs
     )
     article_gen_lm = GoogleModel(
-        model="models/gemini-1.5-pro-exp-0801", max_tokens=700, **gemini_kwargs
+        model="models/gemini-2.0-flash-001", max_tokens=700, **gemini_kwargs
     )
     article_polish_lm = GoogleModel(
-        model="models/gemini-1.5-pro-exp-0801", max_tokens=4000, **gemini_kwargs
+        model="models/gemini-2.0-flash-001", max_tokens=4000, **gemini_kwargs
     )
 
     lm_configs.set_conv_simulator_lm(conv_simulator_lm)
@@ -124,7 +124,8 @@ def main(args):
 
     runner = STORMWikiRunner(engine_args, lm_configs, rm)
 
-    topic = input("Topic: ")
+    # topic = input("Topic: ")
+    topic = "conduct an in-depth analysis of JoggAI as video generator"
     runner.run(
         topic=topic,
         do_research=args.do_research,
@@ -156,6 +157,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--retriever",
         type=str,
+        default="you",
         choices=["bing", "you", "brave", "serper", "duckduckgo", "tavily", "searxng"],
         help="The search engine API to use for retrieving information.",
     )
@@ -163,21 +165,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--do-research",
         action="store_true",
+        default=True,
         help="If True, simulate conversation to research the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-generate-outline",
         action="store_true",
+        default=True,
         help="If True, generate an outline for the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-generate-article",
         action="store_true",
+        default=True,
         help="If True, generate an article for the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-polish-article",
         action="store_true",
+        default=True,
         help="If True, polish the article by adding a summarization section and (optionally) removing "
         "duplicate content.",
     )

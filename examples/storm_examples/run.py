@@ -1,47 +1,51 @@
 import os
 from knowledge_storm import STORMWikiRunnerArguments, STORMWikiRunner, STORMWikiLMConfigs
-from knowledge_storm.lm import OpenAIModel
-from knowledge_storm.rm import YouRM
-from pycallgraph import PyCallGraph
-from pycallgraph.output import GraphvizOutput
+from knowledge_storm.rm import YouRM, SerperRM
+from knowledge_storm.utils import load_api_key
+from tests.helper import get_engine, get_rm
+from knowledge_storm.lm import GoogleModel
+
+load_api_key(toml_file_path="secrets.toml")
 
 lm_configs = STORMWikiLMConfigs()
-key = os.getenv("OPENAI_API_KEY")
-print(key)
-ydc_api_key = os.getenv("YDC_API_KEY")
-print(ydc_api_key)
-openai_kwargs = {
-    'api_key': key,
-    'temperature': 1.0,
-    'top_p': 0.9,
-}
-# STORM is a LM system so different components can be powered by different models to reach a good balance between cost and quality.
-# For a good practice, choose a cheaper/faster model for `conv_simulator_lm` which is used to split queries, synthesize answers in the conversation.
-# Choose a more powerful model for `article_gen_lm` to generate verifiable text with citations.
-gpt_35 = OpenAIModel(model='gpt-3.5-turbo', max_tokens=500, **openai_kwargs)
-gpt_4 = OpenAIModel(model='gpt-4o', max_tokens=3000, **openai_kwargs)
-lm_configs.set_conv_simulator_lm(gpt_35)
-lm_configs.set_question_asker_lm(gpt_35)
-lm_configs.set_outline_gen_lm(gpt_4)
-lm_configs.set_article_gen_lm(gpt_4)
-lm_configs.set_article_polish_lm(gpt_4)
-# Check out the STORMWikiRunnerArguments class for more configurations.
-engine_args = STORMWikiRunnerArguments(output_dir="./results/default")
 
-rm = YouRM(ydc_api_key=ydc_api_key, k=engine_args.search_top_k)
+llm = get_engine("openrouter/openai/o3-mini-high")
+# llm = get_engine("openrouter/deepseek/deepseek-r1")
+# gemini_kwargs = {
+#     "api_key": os.getenv("GOOGLE_API_KEY"),
+#     "temperature": 1.0,
+#     "top_p": 0.9,
+# }
+# llm = GoogleModel(model="gemini-2.0-flash-thinking-exp-01-21", max_tokens=1000, **gemini_kwargs)
+llm2 = get_engine("openrouter/openai/o1-mini", 20000)
+lm_configs.set_conv_simulator_lm(llm)
+lm_configs.set_question_asker_lm(get_engine("openrouter/deepseek/deepseek-r1"))
+lm_configs.set_outline_gen_lm(llm2)
+lm_configs.set_article_gen_lm(llm2)
+lm_configs.set_article_polish_lm(llm2)
+
+engine_args = STORMWikiRunnerArguments(output_dir="./results/default",
+                                    #    max_conv_turn=5,
+                                    #    max_perspective=5,
+                                    #    max_search_queries_per_turn=3,
+                                    #    search_top_k=5,
+                                    #    retrieve_top_k=5,
+                                    #    max_thread_num=20
+                                       )
+
+# rm = get_rm('you')
+rm = get_rm('duckduckgo')
+# rm = SerperRM(serper_search_api_key=os.getenv("SERPER_API_KEY"), query_params={"autocorrect": True, "num": 10, "page": 1, "tbs": "qdr:y"},)
 runner = STORMWikiRunner(engine_args, lm_configs, rm)
 
-topic = "Deep Research of whatnot which is a live streaming e-commerce platform"
-graphviz = GraphvizOutput()
-graphviz.output_type = 'dot'
-graphviz.output_file = 'pycallgraph.dot'
-with PyCallGraph(output=graphviz):
-    runner.run(
-        topic=topic,
-        do_research=True,
-        do_generate_outline=True,
-        do_generate_article=True,
-        do_polish_article=True,
-    )
-    runner.post_run()
-    runner.summary()
+topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
+runner.run(
+    topic=topic,
+    # do_research=False,
+    # do_generate_outline=False,
+    # do_generate_article=False,
+    # do_polish_article=True,
+    remove_duplicate=True
+)
+runner.post_run()
+runner.summary()

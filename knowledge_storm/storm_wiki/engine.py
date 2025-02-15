@@ -281,9 +281,15 @@ class STORMWikiRunner(Engine):
             draft_article=draft_article,
             remove_duplicate=remove_duplicate,
         )
+        article_polished = polished_article.to_string()
         FileIOHelper.write_str(
-            polished_article.to_string(),
+            article_polished,
             os.path.join(self.article_output_dir, "storm_gen_article_polished.txt"),
+        )
+        article_translated = self.storm_article_polishing_module.translate_article(article_polished)
+        FileIOHelper.write_str(
+            article_translated,
+            os.path.join(self.article_output_dir, "storm_gen_article_translated.txt"),
         )
         return polished_article
 

@@ -52,6 +52,12 @@ class StormArticlePolishingModule(ArticlePolishingModule):
         polished_article.post_processing()
         return polished_article
 
+    def translate_article(self, text, language='Chinese'):
+        with dspy.settings.context(lm=self.article_polish_lm, show_guidelines=False):
+            translator = dspy.Predict(Translator)
+            translated_article = translator(page=text).translated_page
+        return translated_article
+
 
 class WriteLeadSection(dspy.Signature):
     """Write a lead section for the given Wikipedia page with the following guidelines:
@@ -100,3 +106,10 @@ class PolishPageModule(dspy.Module):
             page = draft_page
 
         return dspy.Prediction(lead_section=lead_section, page=page)
+
+
+class Translator(dspy.Signature):
+    """Translate the full English article to Chinese, do not ask for continue."""
+
+    page: str = dspy.InputField(prefix="The english article:\n", format=str)
+    translated_page: float = dspy.OutputField(prefix="The translated article:\n", format=str)

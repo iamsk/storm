@@ -1,7 +1,12 @@
 import dspy
 import os
 from knowledge_storm.lm import OpenAIModel
-from knowledge_storm.storm_wiki.modules.persona_generator import FindRelatedTopic, get_wiki_page_title_and_toc, CreateWriterWithPersona
+from knowledge_storm.storm_wiki.modules.persona_generator import (
+    FindRelatedTopic,
+    get_wiki_page_title_and_toc,
+    CreateWriterWithPersona,
+)
+from tests.helper import get_engine
 
 key = os.getenv("OPENAI_API_KEY")
 openai_kwargs = {
@@ -26,7 +31,7 @@ def test_find_related_topics():
 
 
 def test_get_wiki_page_title_and_toc():
-    title, toc = get_wiki_page_title_and_toc('https://en.wikipedia.org/wiki/Bitcoin')
+    title, toc = get_wiki_page_title_and_toc("https://en.wikipedia.org/wiki/Bitcoin")
     print(title)
     print(toc)
     # History
@@ -50,12 +55,29 @@ def test_get_wiki_page_title_and_toc():
     #   Use for payments
     #   Use for investment and status as an economic bubble
     # Further reading
-    assert 'Economics' in toc
-    
-    
-def test_generate_persona():
+    assert "Economics" in toc
+
+
+def test_generate_persona(topic, engine):
     create_writer_with_persona = CreateWriterWithPersona(engine=engine)
     personas = create_writer_with_persona(topic=topic)
-    print(personas)
-    # ["Bitcoin Historian: This editor will focus on the history section of the article, providing details on the creation of Bitcoin, key milestones in its growth, regulatory actions, and its current status."]
-    assert 'Historian' in personas.personas[0]
+    print(f"# {engine.model}")
+    for persona in personas.personas:
+        # ["Bitcoin Historian: This editor will focus on the history section of the article, providing details on the creation of Bitcoin, key milestones in its growth, regulatory actions, and its current status."]
+        print(persona)
+
+
+if __name__ == "__main__":
+    topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
+    models = [
+        "openrouter/deepseek/deepseek-r1",
+        "openrouter/openai/gpt-4o-2024-11-20",
+        "openrouter/openai/o3-mini",
+        "openrouter/openai/o3-mini-high",
+        "openrouter/google/gemini-2.0-flash-001",
+        "openrouter/google/gemini-2.0-pro-exp-02-05:free",
+        "openrouter/google/gemini-2.0-flash-thinking-exp:free",
+    ]
+    for model in models:
+        engine = get_engine(model)
+        test_generate_persona(topic, engine)

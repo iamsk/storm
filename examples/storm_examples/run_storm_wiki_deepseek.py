@@ -21,7 +21,7 @@ import os
 import re
 import logging
 from argparse import ArgumentParser
-
+from dotenv import load_dotenv
 from knowledge_storm import (
     STORMWikiRunnerArguments,
     STORMWikiRunner,
@@ -38,6 +38,8 @@ from knowledge_storm.rm import (
     SearXNG,
 )
 from knowledge_storm.utils import load_api_key
+
+load_dotenv()
 
 
 def sanitize_topic(topic):
@@ -71,8 +73,8 @@ def main(args):
         )
 
     deepseek_kwargs = {
-        "api_key": os.getenv("DEEPSEEK_API_KEY"),
-        "api_base": os.getenv("DEEPSEEK_API_BASE", "https://api.deepseek.com"),
+        "api_key": os.getenv("OPENROUTER_API_KEY"),
+        "api_base": os.getenv("DEEPSEEK_API_BASE", "https://openrouter.ai/api"),
         "temperature": args.temperature,
         "top_p": args.top_p,
     }
@@ -146,7 +148,8 @@ def main(args):
 
     runner = STORMWikiRunner(engine_args, lm_configs, rm)
 
-    topic = input("Topic: ")
+    # topic = input("Topic: ")
+    topic = "deep research on OpenRouter, focusing on the key reasons why users choose it over alternatives."
     sanitized_topic = sanitize_topic(topic)
 
     try:
@@ -185,6 +188,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--retriever",
         type=str,
+        default="you",
         choices=["bing", "you", "brave", "serper", "duckduckgo", "tavily", "searxng"],
         help="The search engine API to use for retrieving information.",
     )
@@ -192,7 +196,7 @@ if __name__ == "__main__":
         "--model",
         type=str,
         choices=["deepseek-chat", "deepseek-coder"],
-        default="deepseek-chat",
+        default="deepseek/deepseek-r1",
         help='DeepSeek model to use. "deepseek-chat" for general tasks, "deepseek-coder" for coding tasks.',
     )
     parser.add_argument(
@@ -205,21 +209,25 @@ if __name__ == "__main__":
     parser.add_argument(
         "--do-research",
         action="store_true",
+        default=True,
         help="If True, simulate conversation to research the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-generate-outline",
         action="store_true",
+        default=True,
         help="If True, generate an outline for the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-generate-article",
         action="store_true",
+        default=True,
         help="If True, generate an article for the topic; otherwise, load the results.",
     )
     parser.add_argument(
         "--do-polish-article",
         action="store_true",
+        default=True,
         help="If True, polish the article by adding a summarization section and (optionally) removing "
         "duplicate content.",
     )
