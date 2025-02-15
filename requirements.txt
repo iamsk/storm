@@ -10,3 +10,4 @@ langchain-qdrant
 numpy==1.26.4
 litellm
 diskcache
+firecrawl-py

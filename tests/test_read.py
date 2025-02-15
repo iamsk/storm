@@ -1,7 +1,7 @@
 from knowledge_storm.storm_wiki.modules.storm_dataclass import StormInformationTable
 
 information_table_local_path = (
-    "results/default/deep_research_on_OpenRouter_as_LLM_routing_platform,_focusing_on_the_key_reasons_why_users_choose_it_over_alternatives/conversation_log.json"
+    "results/default/deep_research_on_OpenRouter_as_a_LLM_routing_platform,_focusing_on_the_key_reasons_why_users_choose_it_over_alternatives/conversation_log.json"
 )
 
 information_table = StormInformationTable.from_conversation_log_file(

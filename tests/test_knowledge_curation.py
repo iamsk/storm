@@ -1,4 +1,6 @@
 import dspy
+import pickle
+from unittest.mock import Mock
 from knowledge_storm.storm_wiki.modules.knowledge_curation import (
     TopicExpert,
     WikiWriter,
@@ -47,21 +49,21 @@ def test_generate_queries():
     topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
     question = "As a developer experience advocate, I'm keen to understand what are the primary reasons developers choose OpenRouter over directly integrating with individual LLM providers?"
     models = [
-        "openrouter/deepseek/deepseek-r1",
+        # "openrouter/deepseek/deepseek-r1",
         "openrouter/openai/gpt-4o-2024-11-20",
-        "openrouter/openai/o3-mini",
-        "openrouter/openai/o3-mini-high",
-        "openrouter/google/gemini-2.0-flash-001",
-        "openrouter/google/gemini-2.0-flash-thinking-exp:free",
-        "openrouter/anthropic/claude-3.5-sonnet",
+        # "openrouter/openai/o3-mini",
+        # "openrouter/openai/o3-mini-high",
+        # "openrouter/google/gemini-2.0-flash-001",
+        # "openrouter/google/gemini-2.0-flash-thinking-exp:free",
+        # "openrouter/anthropic/claude-3.5-sonnet",
     ]
     for model in models:
         engine = get_engine(model)
         _generate_queries(question, topic, engine)
 
 
-def test_question_answering(question, topic, retriever, engine):
-    def _question_answering():
+def test_question_answering():
+    def _question_answering(question, topic, retriever, engine):
         topic_expert = TopicExpert(
             engine=engine,
             max_search_queries=3,
@@ -87,8 +89,10 @@ def test_question_answering(question, topic, retriever, engine):
         "openrouter/google/gemini-2.0-flash-thinking-exp:free",
         "openrouter/anthropic/claude-3.5-sonnet",
     ]
-    rm = get_rm("bing")
-    retriever = Retriever(rm=rm, max_thread=10)
+    retriever = Mock()
+    with open("searched_results.pkl", "rb") as f:
+        searched_results = pickle.load(f)
+    retriever.retrieve.return_value = searched_results
     for model in models:
         engine = get_engine(model)
         _question_answering(question, topic, retriever, engine)
@@ -120,6 +124,6 @@ def test_conv_simulator():
 
 if __name__ == "__main__":
     # test_ask_question()
-    # test_generate_queries()
-    test_question_answering()
+    test_generate_queries()
+    # test_question_answering()
     # test_conv_simulator()

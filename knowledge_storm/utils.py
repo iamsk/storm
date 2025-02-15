@@ -678,14 +678,34 @@ class WebPageHelper:
                 res.raise_for_status()
             return res.content
         except httpx.HTTPError as exc:
-            print(f"Error while requesting {exc.request.url!r} - {exc!r}")
+            print(f"Error while requesting download {exc.request.url!r} - {exc!r}")
             return None
+        
+    def fire_request(self, url):
+        from firecrawl import FirecrawlApp
+        try:
+            app = FirecrawlApp(api_key=os.getenv("FIRECRAWL_API_KEY"))
+            response = app.scrape_url(url=url, params={'formats': ['markdown'], 'excludeTags': ['img']})
+            return response['markdown']
+        except Exception as exc:
+            print(f"Error while requesting firecrawl {exc.request.url!r} - {exc!r}")
+            return self.download_webpage(url)
+        
+    def jina_request(self, url):
+        import requests
+        try:
+            req_url = f'https://r.jina.ai/{url}'
+            response = requests.get(req_url)
+            return response.text
+        except Exception as exc:
+            print(f"Error while requesting jina {exc.request.url!r} - {exc!r}")
+            return self.fire_request(url)
 
     def urls_to_articles(self, urls: List[str]) -> Dict:
         with concurrent.futures.ThreadPoolExecutor(
             max_workers=self.max_thread_num
         ) as executor:
-            htmls = list(executor.map(self.download_webpage, urls))
+            htmls = list(executor.map(self.jina_request, urls))
 
         articles = {}
 

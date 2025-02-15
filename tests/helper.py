@@ -38,6 +38,7 @@ def get_rm(retriever):
         case "you":
             rm = YouRM(ydc_api_key=os.getenv("YDC_API_KEY"), k=search_top_k)
         case "bing":
+            # https://learn.microsoft.com/en-us/bing/search-apis/bing-web-search/reference/query-parameters
             rm = BingSearch(
                 bing_search_api=os.getenv("BING_SEARCH_API_KEY"),
                 k=search_top_k,
@@ -45,7 +46,7 @@ def get_rm(retriever):
         case "serper":
             rm = SerperRM(
                 serper_search_api_key=os.getenv("SERPER_API_KEY"),
-                query_params={"autocorrect": True, "num": 10, "page": 1},
+                query_params={"autocorrect": True, "num": 10, "page": 1, "tbs": "qdr:y"},
             )
         case "brave":
             rm = BraveRM(

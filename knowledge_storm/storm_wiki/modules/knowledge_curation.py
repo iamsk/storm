@@ -202,9 +202,22 @@ class TopicExpert(dspy.Module):
         self.search_top_k = search_top_k
 
     def forward(self, topic: str, question: str, ground_truth_url: str):
+        from knowledge_storm.lm import LitellmModel
+        openai_kwargs = {
+            "api_key": os.getenv("OPENROUTER_API_KEY"),
+            "temperature": 1.0,
+            "top_p": 0.9,
+        }
+        engine = LitellmModel(
+            model='openrouter/openai/gpt-4o-2024-11-20',
+            max_tokens=1000,
+            **openai_kwargs,
+        )
+        with dspy.settings.context(lm=engine, show_guidelines=False):
+            queries = self.generate_queries(topic=topic, question=question).queries
+            
         with dspy.settings.context(lm=self.engine, show_guidelines=False):
             # Identify: Break down question into queries.
-            queries = self.generate_queries(topic=topic, question=question).queries
             queries = [
                 q.replace("-", "").strip().strip('"').strip('"').strip()
                 for q in queries.split("\n")
