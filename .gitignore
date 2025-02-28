@@ -29,3 +29,4 @@ venv/
 *.dot
 *.png
 dist/
+DEMO_WORKING_DIR/

@@ -1,15 +1,20 @@
 import os
 
-import demo_util
+from utils import display
 import streamlit as st
-from demo_util import DemoFileIOHelper, DemoUIHelper
+from utils import file
+from utils.file import DemoFileIOHelper
 from streamlit_card import card
+
+from utils.ui import DemoUIHelper
 
 
 # set page config and display title
 def my_articles_page():
+    display.clear_other_page_session_state(page_index=2)
+    # setup sidebar
     with st.sidebar:
-        _, return_button_col = st.columns([2, 5])
+        _, return_button_col, _ = st.columns([1, 5, 1])
         with return_button_col:
             if st.button(
                 "Select another article",
@@ -19,9 +24,9 @@ def my_articles_page():
                     del st.session_state["page2_selected_my_article"]
                 st.rerun()
 
-    # sync my articles
+    # sync articles
     if "page2_user_articles_file_path_dict" not in st.session_state:
-        local_dir = os.path.join(demo_util.get_demo_dir(), "DEMO_WORKING_DIR")
+        local_dir = os.path.join(file.get_demo_dir(), "DEMO_WORKING_DIR")
         os.makedirs(local_dir, exist_ok=True)
         st.session_state["page2_user_articles_file_path_dict"] = (
             DemoFileIOHelper.read_structure_to_dict(local_dir)
@@ -30,12 +35,11 @@ def my_articles_page():
     # if no feature demo selected, display all featured articles as info cards
     def article_card_setup(column_to_add, card_title, article_name):
         with column_to_add:
-            cleaned_article_title = article_name.replace("_", " ")
             hasClicked = card(
                 title=" / ".join(card_title),
                 text=article_name.replace("_", " "),
                 image=DemoFileIOHelper.read_image_as_base64(
-                    os.path.join(demo_util.get_demo_dir(), "assets", "void.jpg")
+                    os.path.join(file.get_demo_dir(), "assets", "void.jpg")
                 ),
                 styles=DemoUIHelper.get_article_card_UI_style(boarder_color="#9AD8E1"),
             )
@@ -45,7 +49,7 @@ def my_articles_page():
 
     if "page2_selected_my_article" not in st.session_state:
         # display article cards
-        my_article_columns = st.columns(3)
+        my_article_columns = st.columns(2)
         if len(st.session_state["page2_user_articles_file_path_dict"]) > 0:
             # get article names
             article_names = sorted(
@@ -55,7 +59,7 @@ def my_articles_page():
             pagination = st.container()
             bottom_menu = st.columns((1, 4, 1, 1, 1))[1:-1]
             with bottom_menu[2]:
-                batch_size = st.selectbox("Page Size", options=[24, 48, 72])
+                batch_size = st.selectbox("Page Size", options=[10, 20, 30])
             with bottom_menu[1]:
                 total_pages = (
                     int(len(article_names) / batch_size)
@@ -73,7 +77,7 @@ def my_articles_page():
                 start_index = (current_page - 1) * batch_size
                 end_index = min(current_page * batch_size, len(article_names))
                 for article_name in article_names[start_index:end_index]:
-                    column_to_add = my_article_columns[my_article_count % 3]
+                    column_to_add = my_article_columns[my_article_count % 2]
                     my_article_count += 1
                     article_card_setup(
                         column_to_add=column_to_add,
@@ -86,7 +90,7 @@ def my_articles_page():
                     title="Get started",
                     text="Start your first research!",
                     image=DemoFileIOHelper.read_image_as_base64(
-                        os.path.join(demo_util.get_demo_dir(), "assets", "void.jpg")
+                        os.path.join(file.get_demo_dir(), "assets", "void.jpg")
                     ),
                     styles=DemoUIHelper.get_article_card_UI_style(),
                 )
@@ -101,7 +105,7 @@ def my_articles_page():
             "page2_user_articles_file_path_dict"
         ][selected_article_name]
 
-        demo_util.display_article_page(
+        display.display_article_page(
             selected_article_name=selected_article_name,
             selected_article_file_path_dict=selected_article_file_path_dict,
             show_title=True,

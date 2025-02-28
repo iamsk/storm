@@ -1,10 +1,10 @@
 # STORM Minimal User Interface
 
 This is a minimal user interface for `STORMWikiRunner` which includes the following features:
-1. Allowing user to create a new article through the "Create New Article" page.
+1. Allowing user to create a new article through the "Create Article" page.
 2. Showing the intermediate steps of STORMWikiRunner in real-time when creating an article.
 3. Displaying the written article and references side by side.
-4. Allowing user to view previously created articles through the "My Articles" page.
+4. Allowing user to view previously created articles through the "Articles" page.
 
 <p align="center">
   <img src="assets/create_article.jpg" style="width: 70%; height: auto;">

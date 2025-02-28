@@ -1,16 +1,11 @@
 import os
 
-script_dir = os.path.dirname(os.path.abspath(__file__))
-wiki_root_dir = os.path.dirname(os.path.dirname(script_dir))
-
-import demo_util
-from pages_util import MyArticles, CreateNewArticle
-from streamlit_float import *
+from streamlit_float import st
 from streamlit_option_menu import option_menu
+from pages import MyArticles, CreateNewArticle
 
 
 def main():
-    global database
     st.set_page_config(layout="wide")
 
     if "first_run" not in st.session_state:
@@ -36,7 +31,7 @@ def main():
     )
     menu_container = st.container()
     with menu_container:
-        pages = ["My Articles", "Create New Article"]
+        pages = ["Articles", "Create Article"]
         styles = {
             "container": {"padding": "0.2rem 0", "background-color": "#22222200"},
         }
@@ -56,11 +51,9 @@ def main():
             st.session_state["manual_selection_override"] = False
             st.session_state["selected_page"] = None
 
-        if menu_selection == "My Articles":
-            demo_util.clear_other_page_session_state(page_index=2)
+        if menu_selection == "Articles":
             MyArticles.my_articles_page()
-        elif menu_selection == "Create New Article":
-            demo_util.clear_other_page_session_state(page_index=3)
+        elif menu_selection == "Create Article":
             CreateNewArticle.create_new_article_page()
 
 

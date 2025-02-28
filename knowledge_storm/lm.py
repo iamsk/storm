@@ -9,6 +9,7 @@ import threading
 from typing import Optional, Literal, Any
 import ujson
 from pathlib import Path
+from retry import retry
 
 
 from dsp import ERRORS, backoff_hdlr, giveup_hdlr
@@ -117,6 +118,7 @@ def cached_litellm_completion(request):
     return litellm_completion(request, cache={"no-cache": False, "no-store": False})
 
 
+@retry(tries=3, delay=5)
 def litellm_completion(request, cache={"no-cache": True, "no-store": True}):
     kwargs = ujson.loads(request)
     return litellm.completion(cache=cache, **kwargs)

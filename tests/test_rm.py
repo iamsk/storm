@@ -45,7 +45,7 @@ def execute(query, retriever):
 
 
 def run():
-    query = "MicroStrategy Bitcoin purchase date and amount"
+    query = 'site:https://www.linkedin.com/in/ "Safe SuperIntelligence"'
     for retriever in ["bing", "you", "brave", "serper", "duckduckgo", "tavily"]:
         execute(query, retriever)
 

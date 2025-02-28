@@ -21,14 +21,14 @@ engine_args = STORMWikiRunnerArguments(output_dir="./results/default",
                                     #    max_thread_num=20
                                        )
 
-rm = get_rm('duckduckgo')
+rm = get_rm('serper')
 runner = STORMWikiRunner(engine_args, lm_configs, rm)
 
-topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
+topic = "conduct an in-depth analysis of Hongli Zhihui Group as stock code is 300219"
 runner.run(
     topic=topic,
-    do_research=False,
-    do_generate_outline=False,
+    # do_research=False,
+    # do_generate_outline=False,
     # do_generate_article=False,
     # do_polish_article=True,
     remove_duplicate=True
