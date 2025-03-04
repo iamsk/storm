@@ -1,4 +1,5 @@
 import os
+
 from knowledge_storm.lm import LitellmModel
 from knowledge_storm.rm import (
     YouRM,
@@ -18,9 +19,9 @@ from knowledge_storm.utils import load_api_key
 load_api_key(toml_file_path="secrets.toml")
 
 
-def get_engine(model, max_tokens=10000):
+def get_engine(model, max_tokens=10000, platform_key="OPENROUTER_API_KEY"):
     openai_kwargs = {
-        "api_key": os.getenv("OPENROUTER_API_KEY"),
+        "api_key": os.getenv(platform_key),
         "temperature": 1.0,
         "top_p": 0.9,
     }
