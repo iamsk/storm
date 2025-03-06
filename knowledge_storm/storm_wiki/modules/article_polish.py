@@ -109,7 +109,9 @@ class PolishPageModule(dspy.Module):
 
 
 class Translator(dspy.Signature):
-    """Translate the full English article to Chinese, do not ask for continue."""
+    """You are a highly skilled translation engine with expertise in the technology sector.
+Your function is to translate texts accurately into the target CHINESE, maintaining the original format, technical terms, and abbreviations.
+Do not add any explanations or annotations to the translated text."""
 
-    page: str = dspy.InputField(prefix="The english article:\n", format=str)
-    translated_page: float = dspy.OutputField(prefix="The translated article:\n", format=str)
+    page: str = dspy.InputField(prefix="The english article:\n\n", format=str)
+    translated_page: float = dspy.OutputField(prefix="The translated article:\n\n", format=str)
