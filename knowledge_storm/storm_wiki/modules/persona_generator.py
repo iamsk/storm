@@ -111,8 +111,7 @@ class CreateWriterWithPersona(dspy.Module):
         )
 
 default_persona = "Basic fact writer: Basic fact writer focusing on broadly covering the basic facts about the topic."
-venture_capitalist = """
-top-tier venture capitalist: good at identify key metrics for startups offering different types of products.
+venture_capitalist = """Top-tier venture capitalist: Good at identify key metrics for startups offering different types of products.
 
 The product types include but are not limited to:
 
@@ -133,8 +132,7 @@ User-related metrics: number of registered users, active users, retention rate, 
 Product usage metrics: Daily Active Users (DAU), Monthly Active Users (MAU), usage frequency, average usage duration, etc.
 Revenue-related metrics: Average Revenue Per User (ARPU), Average Order Value (AOV), conversion rate, repeat purchase rate, etc.
 Market-related metrics: market share, user sentiment, Net Promoter Score (NPS), etc.
-Operational metrics: cost, profitability, Customer Acquisition Cost (CAC), Customer Lifetime Value (CLTV), etc.
-"""
+Operational metrics: cost, profitability, Customer Acquisition Cost (CAC), Customer Lifetime Value (CLTV), etc."""
 
 
 class StormPersonaGenerator:

@@ -8,10 +8,10 @@ lm_configs = STORMWikiLMConfigs()
 
 lm_configs.set_conv_simulator_lm(get_engine("openrouter/anthropic/claude-3.5-sonnet"))
 # lm_configs.set_question_asker_lm(get_engine("deepseek/deepseek-reasoner", max_tokens=8192, platform_key="DEEPSEEK_API_KEY"))
-lm_configs.set_question_asker_lm(get_engine("openrouter/google/gemini-2.0-flash-001"))
+lm_configs.set_question_asker_lm(get_engine("openrouter/anthropic/claude-3.7-sonnet:thinking"))
 lm_configs.set_outline_gen_lm(get_engine("openrouter/openai/gpt-4o-2024-11-20"))
 lm_configs.set_article_gen_lm(get_engine("openrouter/openai/gpt-4o-2024-11-20"))
-lm_configs.set_article_polish_lm(get_engine("openrouter/openai/o3-mini"))
+lm_configs.set_article_polish_lm(get_engine("openrouter/google/gemini-2.0-flash-001"))
 
 engine_args = STORMWikiRunnerArguments(output_dir="./results/default",
                                        #    max_conv_turn=5,
