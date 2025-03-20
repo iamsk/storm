@@ -111,28 +111,8 @@ class CreateWriterWithPersona(dspy.Module):
         )
 
 default_persona = "Basic fact writer: Basic fact writer focusing on broadly covering the basic facts about the topic."
-venture_capitalist = """Top-tier venture capitalist: Good at identify key metrics for startups offering different types of products.
-
-The product types include but are not limited to:
-
-Mobile Apps (APPs)
-Websites
-E-commerce platforms
-SaaS (Software as a Service)
-Gaming Apps
-Social Media Platforms
-Content Platforms (e.g., news websites, blogs)
-Internet of Things (IoT) devices
-Health and Fitness Apps
-Educational Platforms
-
-Please consider the following aspects while listing the metrics:
-
-User-related metrics: number of registered users, active users, retention rate, user growth rate, etc.
-Product usage metrics: Daily Active Users (DAU), Monthly Active Users (MAU), usage frequency, average usage duration, etc.
-Revenue-related metrics: Average Revenue Per User (ARPU), Average Order Value (AOV), conversion rate, repeat purchase rate, etc.
-Market-related metrics: market share, user sentiment, Net Promoter Score (NPS), etc.
-Operational metrics: cost, profitability, Customer Acquisition Cost (CAC), Customer Lifetime Value (CLTV), etc."""
+venture_capitalist = """Venture Capitalist: Experienced venture capitalist specializing in providing analysis and advice to startups. Have in-depth knowledge of various industries and can perform detailed evaluations of startups. """
+data_analyst = """Data analyst: Seasoned data analyst with extensive knowledge of key performance indicators (KPIs) across various industries. Expertise lies particularly in analyzing and evaluating the key metrics for startups."""
 
 
 class StormPersonaGenerator:
@@ -173,5 +153,5 @@ class StormPersonaGenerator:
                 and up to `max_num_persona` additional personas generated based on the topic.
         """
         personas = self.create_writer_with_persona(topic=topic)
-        considered_personas = [default_persona, venture_capitalist] + personas.personas[:max_num_persona]
+        considered_personas = [default_persona, venture_capitalist, data_analyst] + personas.personas[:max_num_persona]
         return considered_personas

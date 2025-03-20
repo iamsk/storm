@@ -2,17 +2,17 @@ import dspy
 
 from helper import get_engine
 from knowledge_storm.storm_wiki.modules.knowledge_curation import AskQuestionWithPersona
-from knowledge_storm.storm_wiki.modules.persona_generator import venture_capitalist
+from knowledge_storm.storm_wiki.modules.persona_generator import venture_capitalist, data_analyst
 
 
 def run(engine):
     with dspy.settings.context(lm=engine):
         # topic = "Deep Research of MSTR's Bitcoin Investment"
-        # topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
-        topic = "conduct an in-depth analysis of Docker as developer tool"
+        topic = "deep research on OpenRouter as a LLM routing platform, focusing on the key reasons why users choose it over alternatives"
+        # topic = "conduct an in-depth analysis of Docker as developer tool"
         ask_question_with_persona = dspy.ChainOfThought(AskQuestionWithPersona)
         # persona = "Bitcoin Historian: This editor will focus on the history section of the article, providing details on the creation of Bitcoin, key milestones in its growth, regulatory actions, and its current status."
-        question = ask_question_with_persona(topic=topic, persona=venture_capitalist, conv="").question
+        question = ask_question_with_persona(topic=topic, persona=data_analyst, conv="").question
         print(f"{engine.model}: {question}")
 
 
